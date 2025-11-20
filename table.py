@@ -4,3 +4,6 @@ class Table:
         self.height = height
         self.hole = hole
         self.color = color
+
+    def check_pocket(self, ball):
+        pass

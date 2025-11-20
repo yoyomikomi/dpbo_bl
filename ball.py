@@ -8,3 +8,8 @@ class Ball:
         self.status = status
         self.isCue = isCue
     
+    def update_position(self, dt):
+        pass
+
+    def apply_force(self, force, angle):
+        pass
