@@ -5,14 +5,17 @@ from physics import Physics
 from score import Score
 
 class Game:
-    @staticmethod
-    def start():
+    def __init__(self):
+        self.balls = []
+        self.stick = Stick()
+        self.table = Table()
+        self.score = Score()
+
+    def start(self):
         pass
 
-    @staticmethod
-    def pause():
+    def pause(self):
         pass
 
-    @staticmethod
-    def stop():
+    def stop(self):
         pass
