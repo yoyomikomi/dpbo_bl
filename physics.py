@@ -1,9 +1,12 @@
 class Physics:
-    def calculate_velocity(self, speed, angle):
+    @staticmethod
+    def apply_force(ball, force, angle):
         pass
 
-    def check_collision(self, ball1, ball2):
+    @staticmethod
+    def update_position(ball, dt):
         pass
 
-    def check_wall_collision(self, ball, table):
+    @staticmethod
+    def check_collision(ball, table):
         pass
