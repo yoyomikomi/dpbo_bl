@@ -21,12 +21,94 @@ class Physics:
 
     @staticmethod
     def bounce(ball, table):
-        #left or right wall
-        if ball.x - ball.radius < 0 or ball.x + ball.radius > table.width:
-            ball.angle = math.pi - ball.angle
+        bounced = False
+        #left/right walls
+        if ball.x - ball.radius < 0:
+            ball.x = ball.radius
+            ball.angle = 180 - ball.angle
+            bounced = True
+        elif ball.x + ball.radius > table.width:
+            ball.x = table.width - ball.radius
+            ball.angle = 180 - ball.angle
+            bounced = True
 
-        #top or bottom wall
-        if ball.y - ball.radius < 0 or ball.y + ball.radius > table.height:
+        #top/bottom walls
+        if ball.y - ball.radius < 0:
+            ball.y = ball.radius
             ball.angle = -ball.angle
+            bounced = True
+        elif ball.y + ball.radius > table.height:
+            ball.y = table.height - ball.radius
+            ball.angle = -ball.angle
+            bounced = True
 
-        return None
+        if bounced:
+            ball.angle %= 360 
+
+    @staticmethod
+    def ball_collision_check(ball1, ball2, ball_radius):
+        dx = ball2.x - ball1.x
+        dy = ball2.y - ball1.y
+
+        if math.hypot(dx, dy) > 2 * ball_radius:
+            return False
+        # Check if at least one ball is moving
+        if ball1.speed == 0 and ball2.speed == 0:
+            return False
+        
+        rad1 = math.radians(ball1.angle)
+        rad2 = math.radians(ball2.angle)
+        vx1 = ball1.speed * math.cos(rad1)
+        vy1 = ball1.speed * math.sin(rad1)
+        vx2 = ball2.speed * math.cos(rad2)
+        vy2 = ball2.speed * math.sin(rad2)
+        relative_dot = dx * (vx1 - vx2) + dy * (vy1 - vy2)
+        return relative_dot > 0
+    
+    @staticmethod
+    def collide_balls(ball1, ball2, restitution=1.0):
+        # Vector from ball1 to ball2
+        dx = ball2.x - ball1.x
+        dy = ball2.y - ball1.y
+        dist = math.hypot(dx, dy)
+        if dist == 0:
+            return  # avoid division by zero
+
+        # Unit vector along collision axis
+        nx = dx / dist
+        ny = dy / dist
+
+        # Velocities in x/y
+        rad1 = math.radians(ball1.angle)
+        rad2 = math.radians(ball2.angle)
+        vx1 = ball1.speed * math.cos(rad1)
+        vy1 = ball1.speed * math.sin(rad1)
+        vx2 = ball2.speed * math.cos(rad2)
+        vy2 = ball2.speed * math.sin(rad2)
+
+        # Project velocities onto collision axis
+        v1_proj = vx1 * nx + vy1 * ny
+        v2_proj = vx2 * nx + vy2 * ny
+
+        # Swap projected velocities (equal mass)
+        v1_proj_new = v2_proj * restitution
+        v2_proj_new = v1_proj * restitution
+
+        # Update velocities
+        vx1 += (v1_proj_new - v1_proj) * nx
+        vy1 += (v1_proj_new - v1_proj) * ny
+        vx2 += (v2_proj_new - v2_proj) * nx
+        vy2 += (v2_proj_new - v2_proj) * ny
+
+        # Update speed and angle
+        ball1.speed = math.hypot(vx1, vy1)
+        ball1.angle = math.degrees(math.atan2(vy1, vx1))
+        ball2.speed = math.hypot(vx2, vy2)
+        ball2.angle = math.degrees(math.atan2(vy2, vx2))
+
+        # Optional: separate overlapping balls
+        overlap = 0.5 * (2 * ball1.radius - dist + 0.1)
+        ball1.x -= nx * overlap
+        ball1.y -= ny * overlap
+        ball2.x += nx * overlap
+        ball2.y += ny * overlap

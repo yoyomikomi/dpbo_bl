@@ -1,4 +1,3 @@
-import math
 from physics import Physics
 
 class Ball:

@@ -18,6 +18,7 @@ class Table:
         for hx, hy in self.holes:
             dist = math.hypot(ball.x - hx, ball.y - hy)
             if dist <= self.hole_radius:
+                ball.status = "in"
+                ball.speed = 0
                 return True   #the ball masuk
         return False
-    

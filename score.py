@@ -7,3 +7,4 @@ class Score:
     
     def show(self):
         return self.score
+    
