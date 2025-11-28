@@ -3,7 +3,7 @@ class Score:
         self.score = 0
 
     def add(self, points):
-        pass
+        self.score += points
     
     def show(self):
-        pass
+        return self.score

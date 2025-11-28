@@ -1,12 +1,14 @@
 class Stick:
     def __init__(self, x, y, angle, force):
-        self.x = x
-        self.y = y
-        self.angle = angle
-        self.force = force
+        self.x = 0
+        self.y = 0
+        self.angle = 0
+        self.force = 0
     
     def set_angle(self, angle):
-        pass
+        self.angle = angle
 
     def set_force(self, force):
-        pass
+        self.force = force
+
+    
