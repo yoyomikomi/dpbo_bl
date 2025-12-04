@@ -28,28 +28,58 @@ class Game:
 
         self.stick = Stick()
 
+        self.charge = False
+
         self.running = True
 
     def start(self):
         while self.running:
             dt = self.clock.tick(60) / 100.0
 
+            # disable draw stick or act when balls are still moving
+            balls_moving = any(abs(ball.speed) > 0.01 for ball in self.balls)
+
+            # update stick angle based on mouse
+
+            if not balls_moving:
+                mx, my = pygame.mouse.get_pos()
+                cue = self.balls[0]
+                dx = mx - cue.x
+                dy = my - cue.y
+                self.stick.set_angle(math.degrees(math.atan2(dy, dx)))
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
-                
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # shoot the cue ball
-                    cue = self.balls[0]
-                    self.stick.set_force(10)
-                    cue.apply_force(10, self.stick.angle)
 
-            # update stick angle based on mouse
-            mx, my = pygame.mouse.get_pos()
-            cue = self.balls[0]
-            dx = mx - cue.x
-            dy = my - cue.y
-            self.stick.angle = (math.degrees(math.atan2(dy, dx)))
+                if not balls_moving:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        self.charge = True
+                        self.start_pos = pygame.mouse.get_pos()
+
+                    elif event.type == pygame.MOUSEMOTION and self.charge:
+                        mouse_pos = pygame.mouse.get_pos()
+                        # identify cue ball
+                        cue = self.balls[0]
+
+                        # calculate distance between cue ball and mouse
+                        dx = mouse_pos[0] - cue.x
+                        dy = mouse_pos[1] - cue.y
+                        distance = (dx**2 + dy**2) ** 0.5   # Euclidean distance
+
+                        # scale or clamp the force
+                        max_force = 50
+                        force = min(distance / 5, max_force)  # divide to control sensitivity
+
+                        self.stick.set_force(force)
+
+                    elif event.type == pygame.MOUSEBUTTONUP and self.charge:
+                        cue = self.balls[0]
+                        
+                        # apply force to cue ball
+                        cue.apply_force(self.stick.force, self.stick.angle)
+                        self.charge = False
+                        self.stick.force = 0
 
             # physics update
             for ball in self.balls:
@@ -76,7 +106,8 @@ class Game:
             self.table.draw(self.screen, pygame)
             for ball in self.balls:
                 ball.draw(self.screen, pygame)
-            self.stick.draw(self.screen, pygame, cue)
+            if not balls_moving:
+                self.stick.draw(self.screen, pygame, cue)
             self.score.draw(self.screen, pygame)
 
             pygame.display.flip()

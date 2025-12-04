@@ -18,8 +18,21 @@ class Stick:
         length = 120
         rad = math.radians(self.angle)
 
-        x2 = cue_ball.x - math.cos(rad) * length
-        y2 = cue_ball.y - math.sin(rad) * length
+        dx = math.cos(rad)
+        dy = math.sin(rad)
 
-        pygame.draw.line(screen, (255, 255, 150), (cue_ball.x, cue_ball.y), (x2, y2), 4)
+        # Pullback distance increases with force
+        pullback = self.force * 3
+
+        start_x = cue_ball.x - dx * pullback
+        start_y = cue_ball.y - dy * pullback
+        end_x = start_x - dx * length
+        end_y = start_y - dy * length
+
+        pygame.draw.line(screen, (255, 255, 150), 
+                         (start_x, start_y), 
+                         (end_x, end_y), 4)
+        
+        # Draw the tip of the stick for better visibility
+        pygame.draw.circle(screen, (200, 200, 100), (int(start_x), int(start_y)), 3)
     
