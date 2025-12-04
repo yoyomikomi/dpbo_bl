@@ -14,6 +14,12 @@ class Table:
             (width, height)
         ]
 
+    def draw(self, screen, pygame):
+        screen.fill(self.color)
+
+        for hx, hy in self.holes:
+            pygame.draw.circle(screen, (0, 0, 0), (hx, hy), self.hole_radius)
+
     def check_pocket(self, ball):
         for hx, hy in self.holes:
             dist = math.hypot(ball.x - hx, ball.y - hy)

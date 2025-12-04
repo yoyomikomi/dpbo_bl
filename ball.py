@@ -17,3 +17,6 @@ class Ball:
     def apply_force(self, force, angle):
         self.speed = force * 3
         self.angle = angle
+
+    def draw(self, screen, pygame):
+        pygame.draw.circle(screen, self.color, (int(self.x), int(self.y)), self.radius)

@@ -12,7 +12,7 @@ class Physics:
 
         rad = math.radians(ball.angle)
 
-        #update position
+        #apdet posisi
         ball.x += ball.speed * math.cos(rad) * dt
         ball.y += ball.speed * math.sin(rad) * dt
 

@@ -8,3 +8,7 @@ class Score:
     def show(self):
         return self.score
     
+    def draw(self, screen, pygame):
+        font = pygame.font.SysFont(None, 30)
+        text = font.render(f"Score: {self.score}", True, (255, 255, 255))
+        screen.blit(text, (10, 10))
