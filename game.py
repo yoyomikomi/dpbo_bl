@@ -21,10 +21,10 @@ class Game:
 
         # cue ball
         self.balls = [
-            Ball(400, 200, 0, "white", 10, status="in", isCue=True),
-            Ball(500, 200, 0, "red", 10),
-            Ball(520, 180, 0, "blue", 10),
-            Ball(530, 220, 0, "yellow", 10)]
+            Ball(400, 200, 0, "white", 10, status="out", isCue=True),
+            Ball(500, 200, 0, "red", 10, status='out'),
+            Ball(520, 180, 0, "blue", 10, status='out'),
+            Ball(530, 220, 0, "yellow", 10, status='out')]
 
         self.stick = Stick()
 
@@ -53,13 +53,24 @@ class Game:
 
             # physics update
             for ball in self.balls:
-                ball.update_position(dt)
                 Physics.bounce(ball, self.table)
+                ball.update_position(dt)
 
-                if self.table.check_pocket(ball):
+                if self.table.check_pocket(ball) and not ball.status == 'out':
                     ball.speed = 0
-                    ball.x, ball.y = -100, -100  # remove ball
-                    self.score.add(1)
+                    ball.status = 'in'
+                    if not ball.isCue:
+                        self.score.add(1) 
+                        self.balls.remove(ball) # remove ball
+                    else:
+                        ball.x, ball.y = 400, 200
+                        ball.status = 'out'
+
+            # ball-to-ball collision detection and response
+            for i in range(len(self.balls)):
+                for j in range(i + 1, len(self.balls)):
+                    if Physics.ball_collision_check(self.balls[i], self.balls[j], self.balls[i].radius):
+                        Physics.collide_balls(self.balls[i], self.balls[j])
 
             # draw everything
             self.table.draw(self.screen, pygame)

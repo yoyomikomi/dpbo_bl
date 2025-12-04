@@ -4,6 +4,7 @@ class Score:
 
     def add(self, points):
         self.score += points
+        return self.score
     
     def show(self):
         return self.score
