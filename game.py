@@ -26,10 +26,10 @@ class Game:
         cue_ball = Ball(200, self.height//2, 0, "white", 10, status="out", isCue=True)
         self.balls.append(cue_ball)
 
-        # Triangle rack
-        start_x = 600     # position of the front ball
+        #triangle rack
+        start_x = 600    
         start_y = self.height // 2
-        spacing = 22      # slightly bigger than diameter (to prevent overlap)
+        spacing = 22 
 
         colors = ["yellow", "blue", "red", "purple", "orange", "green", "brown",
                 "black", "yellow", "blue", "red", "purple", "orange", "green", "brown"]
