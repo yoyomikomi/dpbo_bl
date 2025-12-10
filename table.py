@@ -8,11 +8,14 @@ class Table:
         self.color = color
 
         self.holes = [
-            (0, 0),
-            (width, 0),
-            (0, height),
-            (width, height)
+            (0, 0),  #t-l
+            (width, 0),  #t-r
+            (0, height),  #b-;
+            (width, height),  #b-r
+            (width // 2, 0),  #t-m
+            (width // 2, height)  #b-m
         ]
+
 
     def draw(self, screen, pygame):
         screen.fill(self.color)
