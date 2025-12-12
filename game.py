@@ -62,7 +62,9 @@ class Game:
             dt = self.clock.tick(60) / 100.0
             self.screen.fill((0, 0, 0))
 
-            for event in pygame.event.get():
+            events = pygame.event.get()
+
+            for event in events:
                 if event.type == pygame.QUIT:
                     self.running = False
             cue = self.balls[0]
@@ -86,7 +88,7 @@ class Game:
                     dy = my - cue.y
                     self.stick.set_angle(math.degrees(math.atan2(dy, dx)))
 
-                for event in pygame.event.get():
+                for event in events:
                     if event.type == pygame.QUIT:
                         self.running = False
 
