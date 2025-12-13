@@ -53,10 +53,32 @@ class Game:
         self.running = True
 
     def start(self):
+
         start_button = pygame.Rect(self.width//2 - 60, self.height//2 - 30, 120, 60)
-        pause_button = pygame.Rect(self.width - 120, 20, 100, 40)
         resume_button = pygame.Rect(self.width//2 - 60, self.height//2 - 80, 120, 60)
         quit_button = pygame.Rect(self.width//2 - 60, self.height//2, 120, 60)
+        pause_surface = pygame.Surface((60, 80), pygame.SRCALPHA)
+
+
+        # pause button draw
+        left_bar = pygame.Rect(10, 10, 8, 30)
+        right_bar = pygame.Rect(left_bar.right + 10, 10, 8, 30)
+
+        pygame.draw.rect(
+            pause_surface,
+            (255, 255, 255, 180),  # alpha included
+            left_bar,
+            border_radius=4
+        )
+        pygame.draw.rect(
+            pause_surface,
+            (255, 255, 255, 180),
+            right_bar,
+            border_radius=4
+        )
+        # draw btn surface
+        pause_rect = pause_surface.get_rect(topleft=(self.width - 120, 20))
+
 
         while self.running:
             dt = self.clock.tick(60) / 100.0
@@ -149,7 +171,7 @@ class Game:
                 if not balls_moving:
                     self.stick.draw(self.screen, pygame, cue)
                 self.score.draw(self.screen, pygame)
-                if Game.draw_button(self.screen, "PAUSE", pause_button, pygame, (200,0,0), (150,0,0)):
+                if Game.draw_transparent_button(self.screen, pause_surface, pause_rect, pygame):
                     self.state = 2
             
             elif self.state == 2:
@@ -182,3 +204,14 @@ class Game:
         if rect.collidepoint(mouse) and click:
             return True
         return False
+    
+    def draw_transparent_button(screen, shape, btn, pygame):
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()[0]
+
+        screen.blit(shape, btn)
+
+        if btn.collidepoint(mouse) and click:
+            return True
+        return False
+
