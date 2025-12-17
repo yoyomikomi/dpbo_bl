@@ -1,16 +1,18 @@
 import math
 
 class Table:
-    def __init__(self, width=800, height=400, hole_radius=20, color="green", border= 30):
+    def __init__(self, width=800, interactableWidth=776, height=400, interactableHeight=376, hole_radius=20, color="green", border= 30):
         self.width = width
         self.height = height
+        self.interactableWidth = interactableWidth
+        self.interactableHeight = interactableHeight
         self.hole_radius = hole_radius
         self.color = color
         self.border = border
         self.corner_radius = hole_radius + 6
         self.middle_radius = hole_radius
 
-        rail = self.border // 2
+        rail = self.border // 1.25
         w = self.width
         h = self.height
 

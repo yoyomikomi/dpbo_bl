@@ -23,22 +23,22 @@ class Physics:
     def bounce(ball, table):
         bounced = False
         #left/right walls
-        if ball.x - ball.radius < 0:
-            ball.x = ball.radius
+        if ball.x - ball.radius < table.width - table.interactableWidth:
+            ball.x = ball.radius + (table.width - table.interactableWidth)
             ball.angle = 180 - ball.angle
             bounced = True
-        elif ball.x + ball.radius > table.width:
-            ball.x = table.width - ball.radius
+        elif ball.x + ball.radius > table.interactableWidth:
+            ball.x = table.interactableWidth - ball.radius
             ball.angle = 180 - ball.angle
             bounced = True
 
         #top/bottom walls
-        if ball.y - ball.radius < 0:
-            ball.y = ball.radius
+        if ball.y - ball.radius < table.height - table.interactableHeight:
+            ball.y = ball.radius + (table.height - table.interactableHeight)
             ball.angle = -ball.angle
             bounced = True
-        elif ball.y + ball.radius > table.height:
-            ball.y = table.height - ball.radius
+        elif ball.y + ball.radius > table.interactableHeight:
+            ball.y = table.interactableHeight - ball.radius
             ball.angle = -ball.angle
             bounced = True
 

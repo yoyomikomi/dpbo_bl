@@ -11,13 +11,16 @@ class Game:
         self.state = state  #menu
         pygame.init()
 
+        self.border = 30
         self.width = 800
+        self.intWidth = 770
+        self.intHeight = 370
         self.height = 400
         self.screen = pygame.display.set_mode((self.width, self.height))
 
         self.clock = pygame.time.Clock()
 
-        self.table = Table(self.width, self.height, 20, (0, 120, 0))
+        self.table = Table(self.width, self.intWidth, self.height, self.intHeight, 20, (0, 120, 0))
         self.score = Score()
 
         # cue ball
@@ -189,6 +192,9 @@ class Game:
 
                 if Game.draw_button(self.screen, "RESTART", restart_button, pygame, (0, 0, 200), (0, 0, 150)):
                     self.__init__(state=1)
+
+            elif self.state == 3:
+                pass
 
             pygame.display.flip()
 

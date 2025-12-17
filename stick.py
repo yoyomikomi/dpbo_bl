@@ -2,10 +2,10 @@ import math
 
 class Stick:
     def __init__(self, x=0, y=0, angle=0, force=0):
-        self.x = 0
-        self.y = 0
-        self.angle = 0
-        self.force = 0
+        self.x = x
+        self.y = y
+        self.angle = angle
+        self.force = force
     
     def set_angle(self, angle):
         self.angle = angle
