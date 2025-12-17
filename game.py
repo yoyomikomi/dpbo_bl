@@ -7,8 +7,8 @@ from physics import Physics
 from score import Score
 
 class Game:
-    def __init__(self):
-        self.state = 0  #menu
+    def __init__(self, state=0):
+        self.state = state  #menu
         pygame.init()
 
         self.width = 800
@@ -54,9 +54,10 @@ class Game:
 
     def start(self):
 
-        start_button = pygame.Rect(self.width//2 - 60, self.height//2 - 30, 120, 60)
-        resume_button = pygame.Rect(self.width//2 - 60, self.height//2 - 80, 120, 60)
-        quit_button = pygame.Rect(self.width//2 - 60, self.height//2, 120, 60)
+        start_button = pygame.Rect(self.width//2 - 60, self.height//2 - 10, 100, 40)
+        resume_button = pygame.Rect(self.width//2 - 60, self.height//2 - 50, 100, 40)
+        quit_button = pygame.Rect(self.width//2 - 60, self.height//2, 100, 40)
+        restart_button = pygame.Rect(self.width//2 - 60, self.height//2 - 100, 100, 40)
         pause_surface = pygame.Surface((60, 80), pygame.SRCALPHA)
 
 
@@ -185,6 +186,9 @@ class Game:
 
                 if Game.draw_button(self.screen, "QUIT", quit_button, pygame, (200,0,0), (150,0,0)):
                     self.running = False
+
+                if Game.draw_button(self.screen, "RESTART", restart_button, pygame, (0, 0, 200), (0, 0, 150)):
+                    self.__init__(state=1)
 
             pygame.display.flip()
 
