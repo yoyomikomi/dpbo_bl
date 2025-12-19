@@ -1,7 +1,7 @@
 import math
 
 class Table:
-    def __init__(self, width=800, interactableWidth=776, height=400, interactableHeight=376, hole_radius=20, color="green", border= 30):
+    def __init__(self, width, interactableWidth, height, interactableHeight, hole_radius, color="green", border= 30):
         self.width = width
         self.height = height
         self.interactableWidth = interactableWidth

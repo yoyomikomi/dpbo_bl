@@ -1,5 +1,6 @@
 import pygame
 import math
+import os
 from ball import Ball
 from stick import Stick
 from table import Table
@@ -9,33 +10,44 @@ from score import Score
 class Game:
     def __init__(self, state=0):
         self.state = state  #menu
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+
         pygame.init()
 
+        info = pygame.display.Info()
+        self.screen_width, self.screen_height = info.current_w, info.current_h
+        self.window_width, self.window_height = self.screen_width-10,self.screen_height-50
+
+        self.original_width = self.window_width
+        self.original_height = self.window_height
+
         self.border = 30
-        self.width = 800
-        self.intWidth = 770
-        self.intHeight = 370
-        self.height = 400
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        # self.window_width = 800
+        # self.intWidth = self.window_width - 30
+        # self.window_height = 400
+        # self.intHeight = self.window_height - 30
+        self.screen = pygame.display.set_mode((self.window_width, self.window_height), pygame.RESIZABLE)
+        pygame.display.update()
 
         self.clock = pygame.time.Clock()
 
-        self.table = Table(self.width, self.intWidth, self.height, self.intHeight, 20, (0, 120, 0))
+        self.table = Table(self.window_width, self.window_width - 30, self.window_height, self.window_height - 30, self.window_height//30, (0, 120, 0))
         self.score = Score()
 
         # cue ball
         self.balls = []
 
-        cue_ball = Ball(200, self.height//2, 0, "white", 10, status="out", isCue=True)
+        cue_ball = Ball(self.window_width // 4, self.window_height//2, 0, "white", self.window_height // 70, status="out", isCue=True)
         self.balls.append(cue_ball)
 
         #triangle rack
-        start_x = 600    
-        start_y = self.height // 2
+        start_x = self.window_width - (self.window_width // 4)
+        start_y = self.window_height // 2
         spacing = 22 
 
         colors = ["yellow", "blue", "red", "purple", "orange", "green", "brown",
-                "black", "yellow", "blue", "red", "purple", "orange", "green", "brown"]
+                 "black", "yellow", "blue", "red", "purple", "orange", "green", "brown"
+                ]
 
         index = 0
         rows = 5
@@ -44,7 +56,7 @@ class Game:
             for col in range(row + 1):
                 x = start_x + row * spacing
                 y = start_y + (col - row / 2) * spacing
-                ball = Ball(x, y, 0, colors[index], 10, status="out")
+                ball = Ball(x, y, 0, colors[index], self.window_height // 70, status="out")
                 self.balls.append(ball)
                 index += 1
 
@@ -57,10 +69,11 @@ class Game:
 
     def start(self):
 
-        start_button = pygame.Rect(self.width//2 - 60, self.height//2 - 10, 100, 40)
-        resume_button = pygame.Rect(self.width//2 - 60, self.height//2 - 50, 100, 40)
-        quit_button = pygame.Rect(self.width//2 - 60, self.height//2, 100, 40)
-        restart_button = pygame.Rect(self.width//2 - 60, self.height//2 - 100, 100, 40)
+        start_button = pygame.Rect(self.window_width//2.5, self.window_height//2 - 10, self.window_width//5, self.window_height//10)
+        resume_button = pygame.Rect(self.window_width//2.5, self.window_height//2, self.window_width//5, self.window_height//10)
+        quit_button = pygame.Rect(self.window_width//2.5, (self.window_height//2 + self.window_height//4), self.window_width//5, self.window_height//10)
+        restart_button = pygame.Rect(self.window_width//2.5, self.window_height//4, self.window_width//5, self.window_height//10)
+        replay_button = pygame.Rect(self.window_width//2.5, self.window_height//2, self.window_width//5, self.window_height//10)
         pause_surface = pygame.Surface((60, 80), pygame.SRCALPHA)
 
 
@@ -81,7 +94,7 @@ class Game:
             border_radius=4
         )
         # draw btn surface
-        pause_rect = pause_surface.get_rect(topleft=(self.width - 120, 20))
+        pause_rect = pause_surface.get_rect(topleft=(self.window_width - 120, 20))
 
 
         while self.running:
@@ -93,14 +106,28 @@ class Game:
             for event in events:
                 if event.type == pygame.QUIT:
                     self.running = False
+                elif event.type == pygame.VIDEORESIZE:
+                    old_width = self.window_width
+                    old_height = self.window_height
+                    self.window_width, self.window_height = event.w, event.h
+                    scale_x = self.window_width / old_width
+                    scale_y = self.window_height / old_height
+                    self.screen = pygame.display.set_mode((self.window_width, self.window_height), pygame.RESIZABLE)
+                    # Update table with new dimensions
+                    self.table = Table(self.window_width, self.window_width - 30, self.window_height, self.window_height - 30, self.window_height//30, (0, 120, 0))
+                    # Scale ball positions and sizes
+                    for ball in self.balls:
+                        ball.x *= scale_x
+                        ball.y *= scale_y
+                        ball.radius = int(ball.radius * scale_y + (self.window_height // 500))
             cue = self.balls[0]
 
             if self.state == 0:
-                font = pygame.font.SysFont(None, 50)
-                title = font.render("BE EL", True, (255,255,255))
-                self.screen.blit(title, (self.width//2 - 120, 100))
+                font = pygame.font.SysFont('calibri', 50)
+                title = font.render("BILIARD GAME", True, (255,255,255))
+                self.screen.blit(title, (self.window_width//2.5, self.window_height//4))
 
-                if Game.draw_button(self.screen, "START", start_button, pygame, (0,200,0), (0,150,0)):
+                if Game.draw_button(self.screen, "PLAY", start_button, pygame, (0,200,0), (0,150,0)):
                     self.state = 1  # switch to PLAYING
                 # disable draw stick or act when balls are still moving
             elif self.state == 1:
@@ -159,7 +186,7 @@ class Game:
                             self.score.add(1) 
                             self.balls.remove(ball) # remove ball
                         else:
-                            ball.x, ball.y = 400, 200
+                            ball.x, ball.y = self.window_width // 4, self.window_height // 2
                             ball.status = 'out'
 
                 # ball-to-ball collision detection and response
@@ -177,11 +204,14 @@ class Game:
                 self.score.draw(self.screen, pygame)
                 if Game.draw_transparent_button(self.screen, pause_surface, pause_rect, pygame):
                     self.state = 2
+                
+                if len(self.balls) == 1:
+                    self.state = 3
             
             elif self.state == 2:
-                pause_overlay = pygame.Surface((self.width, self.height))
+                pause_overlay = pygame.Surface((self.window_width, self.window_height))
                 pause_overlay.set_alpha(128)
-                pause_overlay.fill((0, 0, 0))
+                pause_overlay.fill((20, 40, 20))
                 self.screen.blit(pause_overlay, (0, 0))
 
                 if Game.draw_button(self.screen, "RESUME", resume_button, pygame, (0,200,0), (0,150,0)):
@@ -194,7 +224,15 @@ class Game:
                     self.__init__(state=1)
 
             elif self.state == 3:
-                pass
+                font = pygame.font.SysFont('arial', 50)
+                title = font.render("GAME COMPLETED", True, (255,255,255))
+                self.screen.blit(title, (self.window_width//2 - 170, 100))
+
+                if Game.draw_button(self.screen, "PLAY AGAIN", replay_button, pygame, (200, 50, 150), (150, 0, 100)):
+                    self.__init__(state=1)
+
+                if Game.draw_button(self.screen, "QUIT", quit_button, pygame, (200,0,0), (150,0,0)):
+                    self.running = False
 
             pygame.display.flip()
 
@@ -209,7 +247,8 @@ class Game:
 
         font = pygame.font.SysFont(None, 30)
         label = font.render(text, True, (255,255,255))
-        screen.blit(label, (rect.x + 10, rect.y + 10))
+        label_rect = label.get_rect(center=rect.center)
+        screen.blit(label, label_rect)
         
         if rect.collidepoint(mouse) and click:
             return True
