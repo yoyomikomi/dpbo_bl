@@ -125,6 +125,10 @@ class Game:
             if self.state == 0:
                 font = pygame.font.SysFont('calibri', 50)
                 title = font.render("BILIARD GAME", True, (255,255,255))
+                play_overlay = pygame.Surface((self.window_width, self.window_height))
+                play_overlay.set_alpha(128)
+                play_overlay.fill((20, 40, 20))
+                self.screen.blit(play_overlay, (0, 0))
                 self.screen.blit(title, (self.window_width//2.5, self.window_height//4))
 
                 if Game.draw_button(self.screen, "PLAY", start_button, pygame, (0,200,0), (0,150,0)):
@@ -226,6 +230,10 @@ class Game:
             elif self.state == 3:
                 font = pygame.font.SysFont('arial', 50)
                 title = font.render("GAME COMPLETED", True, (255,255,255))
+                end_overlay = pygame.Surface((self.window_width, self.window_height))
+                end_overlay.set_alpha(128)
+                end_overlay.fill((50, 20, 40))
+                self.screen.blit(end_overlay, (0, 0))
                 self.screen.blit(title, (self.window_width//2 - 170, 100))
 
                 if Game.draw_button(self.screen, "PLAY AGAIN", replay_button, pygame, (200, 50, 150), (150, 0, 100)):
