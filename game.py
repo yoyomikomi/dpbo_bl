@@ -165,7 +165,7 @@ class Game:
                             distance = (dx**2 + dy**2) ** 0.5   # Euclidean distance
 
                             # scale or clamp the force
-                            max_force = 50
+                            max_force = 100
                             force = min(distance / 5, max_force)  # divide to control sensitivity
 
                             self.stick.set_force(force)
